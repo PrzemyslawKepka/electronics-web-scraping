@@ -18,7 +18,10 @@ def scrape_and_get_data(url,page):
         brand.append(i.find('a', {'class': 'product-brand'}).text.strip())
         category.append(i.find('p', {'class': 'product-category'}).text.strip())
         reviews.append(i.find('div', {'class': 'stars-rating'}).text.strip())
-        rating.append(i.find('a', {'class': 'js-save-keyword js-scroll-by-hash'}).get('title'))
+        try:
+            rating.append(i.find('a', {'class': 'js-save-keyword js-scroll-by-hash'}).get('title'))
+        except AttributeError:
+            rating.append('')
         for j in i.find_all('div', {'class': 'attributes-row'}):
             attribute = j.find('span', {'class': 'attribute-name'}).text.strip()
             value = j.find('span', {'class': 'attribute-value'}).text.strip()
@@ -45,12 +48,16 @@ def scrape_and_get_data(url,page):
         except AttributeError:
             former_price.append('')
         # getting delivery type
-        if i.find('span', {'class': 'delivery-message-label'}).text.strip() == 'Sprawdź dostępność w sklepach':
-            delivery.append('store only')
-        else:
-            delivery.append('online')
+        try:
+            if i.find('span', {'class': 'delivery-message-label'}).text.strip() == 'Sprawdź dostępność w sklepach':
+                delivery.append('store only')
+            else:
+                delivery.append('online')
+        except AttributeError:
+            delivery.append('')
         #page number
         item_page.append(page)
+        #print(page)
         
 
 #lists to store scraped data, will be used as columns
